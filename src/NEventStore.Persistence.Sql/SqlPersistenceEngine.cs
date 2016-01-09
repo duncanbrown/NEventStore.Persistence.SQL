@@ -340,7 +340,7 @@ namespace NEventStore.Persistence.Sql
                 cmd.AddParameter(_dialect.CommitId, attempt.CommitId);
                 cmd.AddParameter(_dialect.CommitSequence, attempt.CommitSequence);
                 cmd.AddParameter(_dialect.CommitStamp, attempt.CommitStamp);
-                cmd.AddParameter(_dialect.Headers, _serializer.Serialize(attempt.Headers));
+                _dialect.AddHeadersParameter(_connectionFactory, connection, cmd, _serializer.Serialize(attempt.Headers));
                 _dialect.AddPayloadParamater(_connectionFactory, connection, cmd, _serializer.Serialize(attempt.Events.ToList()));
                 OnPersistCommit(cmd, attempt);
                 var checkpointNumber = cmd.ExecuteScalar(_dialect.PersistCommit).ToLong();

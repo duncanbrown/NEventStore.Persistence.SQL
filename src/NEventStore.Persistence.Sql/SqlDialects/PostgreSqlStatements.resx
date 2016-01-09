@@ -130,8 +130,8 @@
     CommitStamp timestamp NOT NULL,
     CheckpointNumber SERIAL NOT NULL,
     Dispatched boolean NOT NULL DEFAULT false,
-    Headers bytea NULL,
-    Payload bytea NOT NULL,
+    Headers jsonb NULL,
+    Payload jsonb NOT NULL,
     CONSTRAINT PK_Commits PRIMARY KEY (CheckpointNumber )
 );
 CREATE UNIQUE INDEX IX_Commits_CommitSequence ON Commits (BucketId, StreamId, CommitSequence);

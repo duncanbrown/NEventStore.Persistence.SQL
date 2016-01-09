@@ -24,7 +24,7 @@ namespace NEventStore
 
             Container.Register(c => new SqlPersistenceFactory(
                 connectionFactory,
-                c.Resolve<ISerialize>(),
+                new ReadAheadJsonSerializer(), 
                 c.Resolve<ISqlDialect>(),
                 c.Resolve<IStreamIdHasher>(),
                 c.Resolve<TransactionScopeOption>(),

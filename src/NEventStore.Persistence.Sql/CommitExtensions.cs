@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace NEventStore.Persistence.Sql
 {
     using System;
@@ -65,8 +67,8 @@ namespace NEventStore.Persistence.Sql
                 return default(T);
             }
 
-            var bytes = (byte[]) value;
-            return bytes.Length == 0 ? default(T) : serializer.Deserialize<T>(bytes);
+            var json = (string)value;
+            return json.Length == 0 ? default(T) : serializer.Deserialize<T>(Encoding.UTF8.GetBytes(json));
         }
     }
 }

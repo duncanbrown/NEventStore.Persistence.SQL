@@ -188,6 +188,12 @@ namespace NEventStore.Persistence.Sql.SqlDialects
             cmd.AddParameter(Payload, payload);
         }
 
+        public virtual void AddHeadersParameter(IConnectionFactory connectionFactory, IDbConnection connection, IDbStatement cmd,
+            byte[] headers)
+        {
+            cmd.AddParameter(Headers, headers);
+        }
+
         public virtual DateTime ToDateTime(object value)
         {
             value = value is decimal ? (long) (decimal) value : value;

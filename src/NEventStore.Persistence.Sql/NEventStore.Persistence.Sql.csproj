@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NEventStore.Persistence.Sql</RootNamespace>
     <AssemblyName>NEventStore.Persistence.Sql</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\NEventStore.snk</AssemblyOriginatorKeyFile>
@@ -55,6 +55,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
+    <Compile Include="ReadAheadJsonSerializer.cs" />
     <Compile Include="Properties\ProjectAssemblyInfo.cs" />
     <Compile Include="Sha1StreamIdHasher.cs" />
     <Compile Include="SnapshotExtensions.cs" />
@@ -87,6 +88,7 @@
       <DependentUpon>OracleNativeStatements.resx</DependentUpon>
     </Compile>
     <Compile Include="SqlDialects\PagedEnumerationCollection.cs" />
+    <Compile Include="SqlDialects\PostgreSqlDbStatement.cs" />
     <Compile Include="SqlDialects\PostgreSqlDialect.cs" />
     <Compile Include="SqlDialects\PostgreSqlStatements.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -108,6 +110,14 @@
     <Compile Include="UniqueKeyViolationException.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Npgsql, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.3.0.5\lib\net45\Npgsql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
