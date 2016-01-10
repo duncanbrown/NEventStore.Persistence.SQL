@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Transactions;
 using Dapper;
 using Newtonsoft.Json;
 using NEventStore;
+using NEventStore.Persistence.Sql;
 using NEventStore.Persistence.Sql.SqlDialects;
 using Npgsql;
 
@@ -35,7 +37,7 @@ namespace Test
             {
                 var events = Enumerable.Range(1, 10).Select(i => new EventMessage
                 {
-                    Body = new Foo {Id = i, Value = "Bar"},
+                    Body = new Foo { Id = i, Value = "Bar" },
                     Headers = new Dictionary<string, object>
                     {
                         ["UserName"] = i < 8 ? "Bob" : "John"
@@ -51,6 +53,7 @@ namespace Test
             //Direct sql query of json
             using (var con = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["db"].ConnectionString))
             {
+                con.Open();
                 var countOfUpdatesByJohn = con
                     .ExecuteScalar<int>(@"
                         select count(1)
@@ -64,6 +67,7 @@ namespace Test
             //Load events directly, bypassing neventstore
             using (var con = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["db"].ConnectionString))
             {
+                con.Open();
                 var events = con
                     .Query<string>(@"
                         select payload
@@ -80,7 +84,32 @@ namespace Test
                             NullValueHandling = NullValueHandling.Ignore
                         }))
                     .ToList();
-                
+            }
+
+            //Transactions
+            var scopeFactory = new ConfigurationConnectionFactory("db");
+
+            using (var t = new TransactionScope())
+            using (var con = scopeFactory.Open())
+            using (var stream = store.OpenStream(id))
+            {
+                con.Execute("insert into Foo (id, name) values (10, 'Bob')");
+
+                var events = Enumerable.Range(1, 10).Select(i => new EventMessage
+                {
+                    Body = new Foo { Id = i, Value = "Bar" },
+                    Headers = new Dictionary<string, object>
+                    {
+                        ["UserName"] = i < 8 ? "Bob" : "John"
+                    }
+                });
+                foreach (var e in events)
+                {
+                    stream.Add(e);
+                    stream.CommitChanges(Guid.NewGuid());
+                }
+
+                t.Complete();
             }
         }
     }
